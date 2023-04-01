@@ -75,6 +75,12 @@ class PostSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
+class PostListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ["id", "title", "created_at", "created_by"]
+
+
 class CommentVoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommentVote

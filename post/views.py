@@ -4,6 +4,7 @@ from post.models import Comment, CommentVote, Post, PostVote
 from post.serializers import (
     CommentSerializer,
     CommentVoteSerializer,
+    PostListSerializer,
     PostSerializer,
     PostVoteSerializer,
 )
@@ -11,7 +12,11 @@ from post.serializers import (
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PostListSerializer
+        return PostSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):
