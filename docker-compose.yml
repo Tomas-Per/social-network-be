@@ -1,6 +1,7 @@
 version: '3.9'
 services:
   db:
+    container_name: postgres_db
     image: postgres
     restart: always
     environment:
@@ -14,6 +15,7 @@ services:
       - db
 
   api:
+    container_name: api
     build: .
     command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
@@ -25,7 +27,19 @@ services:
     networks:
       - elastic
       - db
+      - redis
 
+  redis:
+    container_name: redis
+    restart: unless-stopped
+    image: redis:alpine 
+    ports:
+        - "6379:6379"
+    networks:
+      - redis
+    depends_on:
+      - api
+  
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
     container_name: elasticsearch
@@ -65,4 +79,6 @@ networks:
   elastic:
     driver: bridge
   db:
+    driver: bridge
+  redis:
     driver: bridge
