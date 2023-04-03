@@ -10,6 +10,8 @@ services:
       - '5432:5432'
     volumes: 
       - db_data:/var/lib/postgresql/data
+    networks:
+      - db
 
   api:
     build: .
@@ -19,6 +21,9 @@ services:
     ports:
       - "8000:8000"
     depends_on:
+      - db
+    networks:
+      - elastic
       - db
 
   elasticsearch:
@@ -58,4 +63,6 @@ volumes:
     driver: local
 networks:
   elastic:
+    driver: bridge
+  db:
     driver: bridge
