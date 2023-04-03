@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from post.models import Comment, CommentVote, Post, PostVote
+from socialnetwork.utils.mixins import BaseSerializerMixin
 
 
 class RecursiveField(serializers.Serializer):
@@ -9,7 +10,7 @@ class RecursiveField(serializers.Serializer):
         return serializer.data
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(BaseSerializerMixin):
     replies = RecursiveField(many=True, read_only=True)
     vote_count = serializers.SerializerMethodField()
 
@@ -34,17 +35,8 @@ class CommentSerializer(serializers.ModelSerializer):
             - obj.comment_votes.filter(vote_type=-1).count()
         )
 
-    def create(self, validated_data):
-        validated_data["created_by"] = self.context["request"].user
-        validated_data["updated_by"] = self.context["request"].user
-        return super().create(validated_data)
 
-    def update(self, instance, validated_data):
-        validated_data["updated_by"] = self.context["request"].user
-        return super().update(instance, validated_data)
-
-
-class PostSerializer(serializers.ModelSerializer):
+class PostSerializer(BaseSerializerMixin):
     comments = CommentSerializer(many=True, read_only=True)
     vote_count = serializers.SerializerMethodField()
 
@@ -64,15 +56,6 @@ class PostSerializer(serializers.ModelSerializer):
         return (
             obj.post_votes.filter(vote_type=1).count() - obj.post_votes.filter(vote_type=-1).count()
         )
-
-    def create(self, validated_data):
-        validated_data["created_by"] = self.context["request"].user
-        validated_data["updated_by"] = self.context["request"].user
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        validated_data["updated_by"] = self.context["request"].user
-        return super().update(instance, validated_data)
 
 
 class PostListSerializer(serializers.ModelSerializer):
