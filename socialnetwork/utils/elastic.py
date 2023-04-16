@@ -13,3 +13,7 @@ def create_update_document(document: dict, index: str):
 
 def delete_document(id: str, index: str):
     es.delete(index=index, id=id)
+
+
+def search_documents(query: str, index: str):
+    return es.search(index=index, body=query, source=False)

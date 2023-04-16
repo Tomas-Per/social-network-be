@@ -3,11 +3,13 @@ from rest_framework import viewsets
 from community.models import Community
 from community.serializers import CommunitySerializer
 from community.tasks import delete_community_from_elastic, sync_community_to_elastic
+from socialnetwork.utils.filters import CommunityFilter
 
 
 class CommunityViewSet(viewsets.ModelViewSet):
     queryset = Community.objects.all()
     serializer_class = CommunitySerializer
+    filterset_class = CommunityFilter
 
     def partial_update(self, request, *args, **kwargs):
         response = super().partial_update(request, *args, **kwargs)

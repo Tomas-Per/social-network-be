@@ -14,10 +14,12 @@ from post.tasks import (
     sync_comment_to_elastic,
     sync_post_to_elastic,
 )
+from socialnetwork.utils.filters import CommentFilter, PostFilter
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
+    filterset_class = PostFilter
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -46,6 +48,7 @@ class PostViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.filter(parent_comment__isnull=True)
     serializer_class = CommentSerializer
+    filterset_class = CommentFilter
 
     def partial_update(self, request, *args, **kwargs):
         response = super().partial_update(request, *args, **kwargs)
