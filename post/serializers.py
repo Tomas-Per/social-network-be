@@ -30,10 +30,7 @@ class CommentSerializer(BaseSerializerMixin):
         ]
 
     def get_vote_count(self, obj):
-        return (
-            obj.comment_votes.filter(vote_type=1).count()
-            - obj.comment_votes.filter(vote_type=-1).count()
-        )
+        return obj.get_comment_votes()
 
 
 class PostSerializer(BaseSerializerMixin):
@@ -48,20 +45,23 @@ class PostSerializer(BaseSerializerMixin):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["comments"] = CommentSerializer(
-            Comment.objects.filter(parent_comment__isnull=True), many=True
+            Comment.objects.filter(post_id=data["id"], parent_comment__isnull=True), many=True
         ).data
         return data
 
     def get_vote_count(self, obj):
-        return (
-            obj.post_votes.filter(vote_type=1).count() - obj.post_votes.filter(vote_type=-1).count()
-        )
+        return obj.get_post_votes()
 
 
 class PostListSerializer(serializers.ModelSerializer):
+    vote_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
-        fields = ["id", "title", "created_at", "created_by"]
+        fields = ["id", "title", "created_at", "created_by", "vote_count"]
+
+    def get_vote_count(self, obj):
+        return obj.get_post_votes()
 
 
 class CommentVoteSerializer(serializers.ModelSerializer):
