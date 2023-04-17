@@ -29,6 +29,8 @@ class PostFilter(filters.FilterSet):
         fields = {
             "title": ["icontains"],
             "content": ["icontains"],
+            "community": ["exact"],
+            "community__name": ["iexact"],
         }
 
     def full_text_search_filter(self, queryset: QuerySet, _, value: str) -> QuerySet:

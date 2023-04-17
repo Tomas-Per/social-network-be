@@ -45,7 +45,10 @@ class PostSerializer(BaseSerializerMixin):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["comments"] = CommentSerializer(
-            Comment.objects.filter(post_id=data["id"], parent_comment__isnull=True), many=True
+            Comment.objects.prefetch_related("replies", "comment_votes").filter(
+                post_id=data["id"], parent_comment__isnull=True
+            ),
+            many=True,
         ).data
         return data
 

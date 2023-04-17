@@ -18,7 +18,15 @@ from socialnetwork.utils.filters import CommentFilter, PostFilter
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = (
+        Post.objects.prefetch_related(
+            "post_votes",
+            "comments",
+            "comments__replies",
+        )
+        .select_related("community")
+        .all()
+    )
     filterset_class = PostFilter
 
     def get_serializer_class(self):
