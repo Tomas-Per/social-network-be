@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from socialnetwork.utils.formatters import SQLFormatter
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -109,3 +111,38 @@ CORS_ALLOWED_ORIGINS = [
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
 CELERY_TASK_ALWAYS_EAGER = True  # Run tasks locally, set to False for production environment
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "sql": {
+            "()": SQLFormatter,
+            "format": "[%(duration).3f] %(statement)s",
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+        },
+        "sql": {
+            "class": "logging.StreamHandler",
+            "formatter": "sql",
+            "level": "DEBUG",
+        },
+    },
+    "loggers": {
+        "django.db.backends": {
+            "handlers": ["sql"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "django.db.backends.schema": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
+}
