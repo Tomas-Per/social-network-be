@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 
 from socialnetwork.utils.formatters import SQLFormatter
@@ -23,6 +24,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "community.apps.CommunityConfig",
     "post.apps.PostConfig",
+    "core.apps.CoreConfig",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 MIDDLEWARE = [
@@ -98,8 +101,13 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
+        # "rest_framework.authentication.SessionAuthentication",
     ],
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
 # CORS
