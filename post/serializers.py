@@ -13,6 +13,7 @@ class RecursiveField(serializers.Serializer):
 class CommentSerializer(BaseSerializerMixin):
     replies = RecursiveField(many=True, read_only=True)
     vote_count = serializers.SerializerMethodField()
+    author_username = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
@@ -27,15 +28,20 @@ class CommentSerializer(BaseSerializerMixin):
             "updated_by",
             "replies",
             "vote_count",
+            "author_username",
         ]
 
     def get_vote_count(self, obj):
         return obj.get_comment_votes()
 
+    def get_author_username(self, obj):
+        return obj.created_by.username
+
 
 class PostSerializer(BaseSerializerMixin):
     comments = CommentSerializer(many=True, read_only=True)
     vote_count = serializers.SerializerMethodField()
+    author_username = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -55,16 +61,23 @@ class PostSerializer(BaseSerializerMixin):
     def get_vote_count(self, obj):
         return obj.get_post_votes()
 
+    def get_author_username(self, obj):
+        return obj.created_by.username
+
 
 class PostListSerializer(serializers.ModelSerializer):
     vote_count = serializers.SerializerMethodField()
+    author_username = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ["id", "title", "created_at", "created_by", "vote_count"]
+        fields = ["id", "title", "created_at", "created_by", "vote_count", "author_username"]
 
     def get_vote_count(self, obj):
         return obj.get_post_votes()
+
+    def get_author_username(self, obj):
+        return obj.created_by.username
 
 
 class CommentVoteSerializer(serializers.ModelSerializer):
