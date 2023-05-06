@@ -42,6 +42,7 @@ class PostSerializer(BaseSerializerMixin):
     comments = CommentSerializer(many=True, read_only=True)
     vote_count = serializers.SerializerMethodField()
     author_username = serializers.SerializerMethodField()
+    community_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -64,20 +65,37 @@ class PostSerializer(BaseSerializerMixin):
     def get_author_username(self, obj):
         return obj.created_by.username
 
+    def get_community_name(self, obj):
+        return obj.community.name
+
 
 class PostListSerializer(serializers.ModelSerializer):
     vote_count = serializers.SerializerMethodField()
     author_username = serializers.SerializerMethodField()
+    community_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ["id", "title", "created_at", "created_by", "vote_count", "author_username"]
+        fields = [
+            "id",
+            "title",
+            "community",
+            "content",
+            "created_at",
+            "created_by",
+            "vote_count",
+            "author_username",
+            "community_name",
+        ]
 
     def get_vote_count(self, obj):
         return obj.get_post_votes()
 
     def get_author_username(self, obj):
         return obj.created_by.username
+
+    def get_community_name(self, obj):
+        return obj.community.name
 
 
 class CommentVoteSerializer(serializers.ModelSerializer):

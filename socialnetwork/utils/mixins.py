@@ -19,6 +19,7 @@ class DefaultValuesMixin(models.Model):
         settings.AUTH_USER_MODEL,
         related_name="%(class)s_created_by",
         on_delete=models.CASCADE,
+        null=True,
         blank=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,6 +27,7 @@ class DefaultValuesMixin(models.Model):
         settings.AUTH_USER_MODEL,
         related_name="%(class)s_updated_by",
         on_delete=models.CASCADE,
+        null=True,
         blank=True,
     )
     updated_at = models.DateTimeField(auto_now=True)

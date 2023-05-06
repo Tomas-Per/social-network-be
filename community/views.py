@@ -1,4 +1,5 @@
 from rest_framework import status, viewsets
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from community.models import Community
 from community.serializers import CommunitySerializer
@@ -10,6 +11,7 @@ class CommunityViewSet(viewsets.ModelViewSet):
     queryset = Community.objects.all()
     serializer_class = CommunitySerializer
     filterset_class = CommunityFilter
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def partial_update(self, request, *args, **kwargs):
         response = super().partial_update(request, *args, **kwargs)
