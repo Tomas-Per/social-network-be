@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 
 from post.models import Comment, CommentVote, Post, PostVote
 from post.serializers import (
@@ -36,19 +36,19 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         response = super().partial_update(request, *args, **kwargs)
-        if response.status_code == 200:
+        if response.status_code == status.HTTP_200_OK:
             sync_post_to_elastic.delay(response.data["id"])
         return response
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        if response.status_code == 201:
+        if response.status_code == status.HTTP_201_CREATED:
             sync_post_to_elastic.delay(response.data["id"])
         return response
 
     def destroy(self, request, *args, **kwargs):
         response = super().destroy(request, *args, **kwargs)
-        if response.status_code == 204:
+        if response.status_code == status.HTTP_204_NO_CONTENT:
             delete_post_from_elastic.delay(kwargs["pk"])
         return response
 
@@ -60,19 +60,19 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         response = super().partial_update(request, *args, **kwargs)
-        if response.status_code == 200:
+        if response.status_code == status.HTTP_200_OK:
             sync_comment_to_elastic.delay(response.data["id"])
         return response
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        if response.status_code == 201:
+        if response.status_code == status.HTTP_201_CREATED:
             sync_comment_to_elastic.delay(response.data["id"])
         return response
 
     def destroy(self, request, *args, **kwargs):
         response = super().destroy(request, *args, **kwargs)
-        if response.status_code == 204:
+        if response.status_code == status.HTTP_204_NO_CONTENT:
             delete_comment_from_elastic.delay(kwargs["pk"])
         return response
 
