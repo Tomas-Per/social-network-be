@@ -9,6 +9,8 @@ from socialnetwork.utils.elastic import search_documents
 class CommunityFilter(filters.FilterSet):
     full_text_search = filters.CharFilter(method="full_text_search_filter", label="search")
 
+    order = filters.OrderingFilter(fields=(("name", "name"), ("created_at", "created_at")))
+
     class Meta:
         model = Community
         fields = {
@@ -23,6 +25,14 @@ class CommunityFilter(filters.FilterSet):
 
 class PostFilter(filters.FilterSet):
     full_text_search = filters.CharFilter(method="full_text_search_filter", label="search")
+
+    order = filters.OrderingFilter(
+        fields=(
+            ("created_at", "created_at"),
+            ("updated_at", "updated_at"),
+            ("vote_count", "vote_count"),
+        )
+    )
 
     class Meta:
         model = Post
