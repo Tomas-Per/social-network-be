@@ -54,10 +54,14 @@ class PostFilter(filters.FilterSet):
         if value:
             queryset = queryset.filter(created_at__gte=timezone.now() - timedelta(days=7))
 
-        return queryset.annotate(
-            vote_count=Count("post_votes", filter=Q(post_votes__vote_type=1))
-            - Count("post_votes", filter=Q(post_votes__vote_type=-1))
-        ).order_by("-vote_count")
+        return (
+            queryset.annotate(
+                vote_count=Count("post_votes", filter=Q(post_votes__vote_type=1))
+                - Count("post_votes", filter=Q(post_votes__vote_type=-1))
+            )
+            .filter(vote_count__gte=1)
+            .order_by("-vote_count")
+        )
 
 
 class CommentFilter(filters.FilterSet):
