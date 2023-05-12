@@ -4,7 +4,7 @@ from socialnetwork.utils.elastic import create_update_document, delete_document
 
 
 @app.task(name="sync.community.to.elastic")
-def sync_community_to_elastic(community_id):
+def sync_community_to_elastic(community_id: str) -> None:
     community = Community.objects.get(id=community_id)
     document = {
         "_index": "communities",
@@ -18,5 +18,5 @@ def sync_community_to_elastic(community_id):
 
 
 @app.task(name="delete.community.from.elastic")
-def delete_community_from_elastic(community_id):
+def delete_community_from_elastic(community_id: str) -> None:
     delete_document(community_id, "communities")

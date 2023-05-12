@@ -11,7 +11,7 @@ class Post(DefaultUUIDMixin, DefaultValuesMixin):
     url = models.URLField("URL", max_length=200, null=True, blank=True)
     community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name="posts")
 
-    def get_post_votes(self):
+    def get_post_votes(self) -> int:
         return (
             self.post_votes.filter(vote_type=1).count()
             - self.post_votes.filter(vote_type=-1).count()
@@ -28,7 +28,7 @@ class Comment(DefaultUUIDMixin, DefaultValuesMixin):
     )
     content = models.CharField(max_length=280)
 
-    def get_comment_votes(self):
+    def get_comment_votes(self) -> int:
         return (
             self.comment_votes.filter(vote_type=1).count()
             - self.comment_votes.filter(vote_type=-1).count()

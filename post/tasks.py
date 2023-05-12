@@ -4,7 +4,7 @@ from socialnetwork.utils.elastic import create_update_document, delete_document
 
 
 @app.task(name="sync.post.to.elastic")
-def sync_post_to_elastic(post_id):
+def sync_post_to_elastic(post_id: str) -> None:
     post = Post.objects.get(id=post_id)
     document = {
         "_index": "posts",
@@ -20,12 +20,12 @@ def sync_post_to_elastic(post_id):
 
 
 @app.task(name="delete.post.from.elastic")
-def delete_post_from_elastic(post_id):
+def delete_post_from_elastic(post_id: str) -> None:
     delete_document(post_id, "posts")
 
 
 @app.task(name="sync.comment.to.elastic")
-def sync_comment_to_elastic(comment_id):
+def sync_comment_to_elastic(comment_id: str) -> None:
     comment = Comment.objects.get(id=comment_id)
     document = {
         "_index": "comments",
@@ -40,5 +40,5 @@ def sync_comment_to_elastic(comment_id):
 
 
 @app.task(name="delete.comment.from.elastic")
-def delete_comment_from_elastic(comment_id):
+def delete_comment_from_elastic(comment_id: str) -> None:
     delete_document(comment_id, "comments")
