@@ -15,6 +15,7 @@ from post.tasks import (
     sync_post_to_elastic,
 )
 from socialnetwork.utils.filters import CommentFilter, PostFilter
+from socialnetwork.utils.permissions import OwnerAuthenticatedOrReadOnlyPermission
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -28,6 +29,7 @@ class PostViewSet(viewsets.ModelViewSet):
         .all()
     )
     filterset_class = PostFilter
+    permission_classes = [OwnerAuthenticatedOrReadOnlyPermission]
 
     def get_serializer_class(self):
         if self.action == "list":
